@@ -43,6 +43,47 @@ class CampaignsStream(SendinblueStream):
     schema = th.PropertiesList(
         th.Property("id", th.IntegerType),
         th.Property("name", th.StringType),
+        th.Property("subject", th.StringType),
+        th.Property("type", th.StringType),
+        th.Property("status", th.StringType),
+        th.Property("scheduledAt", th.StringType),
+        th.Property("testSent", th.BooleanType),
+        th.Property("header", th.StringType),
+        th.Property("footer", th.StringType),
+        th.Property("sender", th.ObjectType()),
+        th.Property("replyTo", th.StringType),
+        th.Property("toField", th.StringType),
+        th.Property("shareLink", th.StringType),
+        th.Property("tag", th.StringType),
+        th.Property("createdAt", th.StringType),
+        th.Property("modifiedAt", th.StringType),
+        th.Property("inlineImageActivation", th.BooleanType),
+        th.Property("mirrorActive", th.BooleanType),
+        th.Property("recurring", th.BooleanType),
+        th.Property("recipients", th.ObjectType()),
+        th.Property("statistics", th.ObjectType()),
+    ).to_dict()
+
+
+class SMSCampaignsStream(SendinblueStream):
+    """Define custom stream."""
+    name = "sms_campaigns"
+    path = "/smsCampaigns"
+    primary_keys = ["id"]
+    replication_key = None
+    records_jsonpath = "$.campaigns[*]"
+    schema = th.PropertiesList(
+        th.Property("id", th.IntegerType),
+        th.Property("name", th.StringType),
+        th.Property("status", th.StringType),
+        th.Property("content", th.StringType),
+        th.Property("scheduledAt", th.StringType),
+        th.Property("testSent", th.BooleanType),
+        th.Property("sender", th.StringType),
+        th.Property("createdAt", th.StringType),
+        th.Property("modifiedAt", th.StringType),
+        th.Property("recipients", th.ObjectType()),
+        th.Property("statistics", th.ObjectType()),
     ).to_dict()
 
 
