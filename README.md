@@ -14,20 +14,20 @@ pipx install tap-sendinblue
 
 ## Configuration
 
-### Accepted Config Options
+| Name | Required | Description | Example |
+|------|----------|-------------|---------|
+| `api_key` | Yes | Sendinblue API key used to authenticate all requests. Found under **SMTP & API > API Keys** in your Sendinblue account. | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
+| `start_date` | No | Earliest record date to sync. Records with a date before this value are ignored. ISO 8601 format. | `2023-01-01T00:00:00Z` |
+| `user_agent` | No | Custom `User-Agent` header value sent with every request. Useful for identifying your integration in API logs. | `tap-sendinblue/1.0 my-company` |
 
-- [ ] `Developer TODO:` Provide a list of config options accepted by the tap.
+**Note:** `api_key` is the only authentication method supported. You can generate or manage keys in your Sendinblue account under **Settings > SMTP & API > API Keys**. The key is sent as an `api-key` request header.
 
-A full list of supported settings and capabilities for this
-tap is available by running:
-
-```bash
-tap-sendinblue --about
+```json
+{
+  "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "start_date": "2023-01-01T00:00:00Z"
+}
 ```
-
-### Source Authentication and Authorization
-
-- [ ] `Developer TODO:` If your tap requires special access on the source system, or any special authentication requirements, provide those here.
 
 ## Usage
 

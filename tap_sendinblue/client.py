@@ -2,13 +2,12 @@
 
 import requests
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, List, Iterable
-
-from memoization import cached
+from typing import Any, Dict, Optional, Iterable
 
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 from singer_sdk.authenticators import APIKeyAuthenticator
+from singer_sdk.exceptions import FatalAPIError, RetriableAPIError
 
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
@@ -47,6 +46,27 @@ class SendinblueStream(RESTStream):
         # If not using an authenticator, you may also provide inline auth headers:
         # headers["Private-Token"] = self.config.get("auth_token")
         return headers
+
+    def validate_response(self, response: requests.Response) -> None:
+        """Raise FatalAPIError or RetriableAPIError with the Brevo error body."""
+        if response.status_code < 400:
+            return
+
+        try:
+            body = response.json()
+            detail = body.get("message") or body.get("error") or response.text
+        except Exception:
+            detail = response.text
+
+        msg = (
+            f"{response.status_code} {response.reason} for path: "
+            f"{response.url.split(self.url_base)[-1]} — {detail}"
+        )
+
+        if response.status_code == 429 or response.status_code >= 500:
+            raise RetriableAPIError(msg)
+
+        raise FatalAPIError(msg)
 
     def get_next_page_token(
         self, response: requests.Response, previous_token: Optional[Any]
